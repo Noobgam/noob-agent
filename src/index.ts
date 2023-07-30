@@ -10,12 +10,14 @@ const port = 3000
 
 app.listen(port, () => {
     const anki = new AnkiClient(globalConfig.anki);
+    let loopId = 0;
 
     noopConcurrentInterval(
         'refreshAnkiMetrics',
         async () => {
             try {
                 await collectSnapshot(anki);
+                loopId = 1;
             } catch (e) {
                 console.log(e);
             }
@@ -25,6 +27,10 @@ app.listen(port, () => {
     noopConcurrentInterval(
         'prometheusPush',
         async () => {
+            if (!loopId) {
+                // do not push if no metrics were pushed. Pushgateway overrides ALL metrics per job.
+                return;
+            }
             try {
                 await pushMetrics(globalConfig.prometheus);
             } catch (e) {
