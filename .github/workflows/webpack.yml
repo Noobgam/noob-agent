@@ -8,6 +8,7 @@ on:
 
 jobs:
   build:
+    permissions: write-all
     runs-on: ubuntu-latest
 
     strategy:
@@ -27,7 +28,7 @@ jobs:
         with:
           cmd: install
 
-      - name: Run install
+      - name: Run release
         uses: borales/actions-yarn@v4
         with:
           cmd: release
