@@ -51,3 +51,4 @@ jobs:
           asset_path: ./dist/bundle.js
           asset_name: bundle.js
           asset_content_type: application/binary
+
