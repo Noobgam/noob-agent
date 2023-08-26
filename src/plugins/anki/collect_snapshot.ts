@@ -1,6 +1,6 @@
-import {metrics} from "../prometheus/metrics";
+import {metrics} from "../../prometheus/metrics";
 import {AnkiClient} from "./client";
-import {log} from "../config";
+import {log} from "../../config";
 
 export async function collectSnapshot(anki: AnkiClient) {
     const decks = (await anki.getDeckNames()).result;

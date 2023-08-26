@@ -1,4 +1,4 @@
-import {AnkiConfig} from "./anki/anki_config";
+import {AnkiConfig} from "./plugins/anki/anki_config";
 import {PrometheusConfig} from "./prometheus/config";
 import {ILogObj, Logger} from "tslog";
 

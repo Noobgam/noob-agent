@@ -20,6 +20,9 @@ export async function pushMetrics(config: PrometheusConfig) {
     metrics.locked = true;
     try {
         log.info(`Pushing metrics`);
+        if (process.env['LOCAL_START'] === "true") {
+            return console.log(metrics.ankiReviewGauge)
+        }
         return await client.push({jobName: 'anki_personal_monitoring'});
     } finally {
         metrics.locked = false
