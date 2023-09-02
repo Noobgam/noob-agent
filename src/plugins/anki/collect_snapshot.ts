@@ -15,33 +15,34 @@ export async function collectSnapshot(anki: AnkiClient) {
     // @ts-ignore
     const allNotes = (await anki.notesInfo(noteIds)).result;
     log.info(`Done fetching notes`);
-    if (metrics.locked) {
-        log.error("Cannot update metrics when locked. Discarding result.");
-        return;
-    }
-    metrics.locked = true;
-    try {
-        metrics.ankiReviewGauge.reset()
-        for (const deck of decks) {
-            const rawResult = await anki.getDeckReviews(deck);
-            for (let tuple of rawResult.result) {
-                const cardId = tuple[1];
-                const note = allNotes.find(note => note.cards.indexOf(cardId) !== -1);
-                if (!note) {
-                    log.error(`Could not match card ${cardId}`);
-                    continue;
-                }
-                const languages =
-                    note.tags.filter(t => t.startsWith('language_'))
-                        .map(t => t.substring('language_'.length));
-                if (languages.length != 1) {
-                    // untracked, this is something odd
-                    continue;
-                }
-                metrics.ankiReviewGauge.inc({deck_name: deck, language: languages[0]}, 1);
+    let tmpMetrics = new Map<string, Map<string, number>>();
+    for (const deck of decks) {
+        const rawResult = await anki.getDeckReviews(deck);
+        for (let tuple of rawResult.result) {
+            const cardId = tuple[1];
+            const note = allNotes.find(note => note.cards.indexOf(cardId) !== -1);
+            if (!note) {
+                log.error(`Could not match card ${cardId}`);
+                continue;
             }
+            const languages =
+                note.tags.filter(t => t.startsWith('language_'))
+                    .map(t => t.substring('language_'.length));
+            if (languages.length != 1) {
+                // untracked, this is something odd
+                continue;
+            }
+            if (!tmpMetrics.has(deck)) {
+                tmpMetrics.set(deck, new Map<string, number>());
+            }
+            const deckMap = tmpMetrics.get(deck)!;
+            deckMap.set(languages[0], (deckMap.get(languages[0]) ?? 0) + 1)
         }
-    } finally {
-        metrics.locked = false;
     }
+
+    tmpMetrics.forEach((tmpMap, deckName) => {
+        tmpMap.forEach((value, language) => {
+            metrics.ankiReviewGauge.set({deck_name: deckName, language: language}, value);
+        })
+    })
 }
