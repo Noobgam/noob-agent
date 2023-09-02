@@ -24,7 +24,7 @@ export class AnkiPlugin extends PrometheusPlugin {
     }
 
     getExecutionDelayMs(): number {
-        return 10000;
+        return 30000;
     }
 
     getJobName(): string {
