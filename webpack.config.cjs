@@ -16,7 +16,7 @@ module.exports = {
     },
     target: 'node',
     output: {
-        filename: 'bundle.js',
+        filename: 'bundle.cjs',
         path: path.resolve(__dirname, 'dist'),
     },
 };

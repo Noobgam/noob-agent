@@ -1,5 +1,5 @@
 import {metrics} from "../../prometheus/metrics";
-import {AnkiClient} from "./client";
+import {AnkiClient} from "../../anki/client";
 import {log} from "../../config";
 
 export async function collectSnapshot(anki: AnkiClient) {

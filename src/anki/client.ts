@@ -1,4 +1,4 @@
-import {AnkiConfig} from "./anki_config";
+import {AnkiConfig} from "../plugins/anki/anki_config";
 import fetch from "node-fetch";
 
 interface AnkiConnectRequest {
@@ -30,6 +30,15 @@ export class AnkiClient {
             }),
         });
         return await res.json();
+    }
+
+    async getCardIds(deckName: string): Promise<{ result: number[] }> {
+        return this.ankiRequest(this.config, {
+            action: 'findCards',
+            params: {
+                query: `"deck:${deckName}"`,
+            }
+        }).then(data => data as ({ result : number[] }))
     }
 
     async getDeckNames(): Promise<{ result: string[] }> {

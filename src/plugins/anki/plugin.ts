@@ -1,6 +1,6 @@
 import {PrometheusPlugin} from "../plugin";
 import {Registry} from "prom-client";
-import {AnkiClient} from "./client";
+import {AnkiClient} from "../../anki/client";
 import {collectSnapshot} from "./collect_snapshot";
 import {ankiRegistry} from "../../prometheus/metrics";
 

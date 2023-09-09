@@ -7,8 +7,10 @@
     "build": "webpack --mode development",
     "release": "webpack --mode production",
     "bs": "yarn build && yarn start",
-    "start": "node ./dist/bundle.js"
+    "start": "node ./dist/bundle.cjs",
+    "playground": "ts-node --esm ./src/playground/main.ts"
   },
+  "type": "module",
   "keywords": [],
   "author": "Noobgam <shessmaster12@gmail.com>",
   "license": "ISC",
