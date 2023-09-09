@@ -22,6 +22,10 @@ export class AnkiClient {
     }
 
     async ankiRequest(config: AnkiConfig, request: AnkiConnectRequest) {
+        console.log(`Doing request ${JSON.stringify({
+            ...request,
+            version: 6,
+        })}`)
         const res = await fetch(config.url, {
             method: 'POST',
             body: JSON.stringify({
@@ -32,13 +36,34 @@ export class AnkiClient {
         return await res.json();
     }
 
-    async getCardIds(deckName: string): Promise<{ result: number[] }> {
+    async findNotes(deckName: string): Promise<{ result: number[] }> {
         return this.ankiRequest(this.config, {
-            action: 'findCards',
+            action: 'findNotes',
             params: {
                 query: `"deck:${deckName}"`,
             }
         }).then(data => data as ({ result : number[] }))
+    }
+
+    async getNotesInfo(noteIds: number[]): Promise<any>{
+        return this.ankiRequest(this.config, {
+            action: 'notesInfo',
+            params: {
+                notes: noteIds
+            }
+        })
+    }
+
+    async updateNoteFields(note: {
+        id: number;
+        fields: Record<string, string>
+    }): Promise<any>{
+        return this.ankiRequest(this.config, {
+            action: 'updateNoteFields',
+            params: {
+                note: note
+            }
+        })
     }
 
     async getDeckNames(): Promise<{ result: string[] }> {
