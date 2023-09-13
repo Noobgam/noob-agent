@@ -1,6 +1,8 @@
 import {AnkiClient} from "../anki/client";
-import {globalConfig} from "../config";
+import {globalConfig, log} from "../config";
 import fetch from "node-fetch";
+import {ReviewedCard} from "../anki/model";
+import { createClient } from '@clickhouse/client' // or '@clickhouse/client-web'
 
 const ankiClient = new AnkiClient(globalConfig.anki);
 
@@ -8,6 +10,24 @@ const deckName = "Playground";
 
 const res = await ankiClient.findNotes(deckName);
 const notes = await ankiClient.getNotesInfo(res.result).then(r => r.result);
+const decks = (await ankiClient.getDeckNames()).result;
+const results: ReviewedCard[] = []
+log.info(`Fetching deck cards`);
+for (const deck of decks) {
+    const deckResult = (await ankiClient.getDeckReviews(deck)).result;
+    results.push(...deckResult)
+}
+const client = createClient({
+    username: process.env['CLICKHOUSE_USERNAME'],
+    password: process.env['CLICKHOUSE_PASSWORD'],
+    host: process.env['CLICKHOUSE_HOST'],
+    /* configuration */
+});
+await client.insert({
+    table: 'raw_anki_reviews',
+    values: results,
+    format: "JSONEachRow",
+});
 
 const extractJson = (s: string) => {
     const codeMarkup = '```';

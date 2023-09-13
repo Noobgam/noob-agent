@@ -8,7 +8,8 @@
     "release": "webpack --mode production",
     "bs": "yarn build && yarn start",
     "start": "node ./dist/bundle.cjs",
-    "playground": "ts-node --esm ./src/playground/main.ts"
+    "playground": "ts-node --esm ./src/playground/main.ts",
+    "install-win-service": "ts-node --esm ./src/installer/main.ts"
   },
   "type": "module",
   "keywords": [],
@@ -24,6 +25,9 @@
     "typescript": "^5.2.2"
   },
   "devDependencies": {
+    "@clickhouse/client": "^0.2.2",
+    "node-windows": "^1.0.0-beta.8",
+    "@types/node-windows": "^0.1.3",
     "ts-loader": "^9.4.4",
     "ts-node": "^10.9.1",
     "webpack": "^5.88.2",
