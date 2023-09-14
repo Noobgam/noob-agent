@@ -1,6 +1,7 @@
 import {AnkiConfig} from "../plugins/anki/anki_config";
 import fetch from "node-fetch";
 import {ReviewedCard} from "./model";
+import {log} from "../config";
 
 interface AnkiConnectRequest {
     action: string;
@@ -23,7 +24,7 @@ export class AnkiClient {
     }
 
     async ankiRequest(config: AnkiConfig, request: AnkiConnectRequest) {
-        console.log(`Doing request ${JSON.stringify({
+        log.info(`Doing request ${JSON.stringify({
             ...request,
             version: 6,
         })}`)

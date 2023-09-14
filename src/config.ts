@@ -28,5 +28,7 @@ export const configureFromEnvironment: () => Config = () => {
     }
 }
 
-export const log: Logger<ILogObj> = new Logger();
+export const log: Logger<ILogObj> = new Logger({
+    type: "json",
+});
 export const globalConfig: Config = configureFromEnvironment();

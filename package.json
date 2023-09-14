@@ -9,7 +9,8 @@
     "bs": "yarn build && yarn start",
     "start": "node ./dist/bundle.cjs",
     "playground": "ts-node --esm ./src/playground/main.ts",
-    "install-win-service": "ts-node --esm ./src/installer/main.ts"
+    "install-win-service": "ts-node --esm ./src/installer/install.ts",
+    "uninstall-win-service": "ts-node --esm ./src/installer/uninstall.ts"
   },
   "type": "module",
   "keywords": [],
