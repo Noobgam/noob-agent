@@ -2,6 +2,7 @@ import {Plugin, PrometheusPlugin} from "../plugin";
 import {noopConcurrentInterval} from "../../utils/functional";
 import {Pushgateway} from "prom-client";
 import {PrometheusConfig} from "../../prometheus/config";
+import {log} from "../../config";
 
 export class Executor {
     registeredPlugins: Plugin[];
@@ -21,12 +22,12 @@ export class Executor {
                 try {
                     await plugin.executePluginCron();
                 } catch (e) {
-                    console.log(e);
+                    log.error(e);
                 }
             }, plugin.getExecutionDelayMs()
         )
         if (plugin instanceof PrometheusPlugin) {
-            console.log(`Registering prometheus plugin`);
+            log.info(`Registering prometheus plugin`);
             noopConcurrentInterval(
                 plugin.getName() + 'metricsPush',
                 async () => {
@@ -44,7 +45,7 @@ export class Executor {
                         plugin.getRegistry()
                     )
                     if (process.env['LOCAL_START'] === "true") {
-                        console.log(await plugin.getRegistry().metrics())
+                        log.info(await plugin.getRegistry().metrics())
                     } else {
                         await client.pushAdd({jobName: plugin.getJobName()});
                     }

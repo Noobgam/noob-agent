@@ -1,5 +1,5 @@
 import {metrics} from "../../prometheus/metrics";
-import {AnkiClient} from "./client";
+import {AnkiClient} from "../../anki/client";
 import {log} from "../../config";
 
 export async function collectSnapshot(anki: AnkiClient) {
@@ -8,7 +8,7 @@ export async function collectSnapshot(anki: AnkiClient) {
     log.info(`Fetching deck cards`);
     for (const deck of decks) {
         const deckResult = (await anki.getDeckReviews(deck)).result;
-        cardsToFetch.push(...deckResult.flatMap(d => d[1]))
+        cardsToFetch.push(...deckResult.flatMap(d => d.cardID))
     }
     const noteIds = (await anki.cardsToNotes(cardsToFetch)).result;
     log.info(`Fetching ${noteIds.length} notes`);
@@ -18,8 +18,8 @@ export async function collectSnapshot(anki: AnkiClient) {
     let tmpMetrics = new Map<string, Map<string, number>>();
     for (const deck of decks) {
         const rawResult = await anki.getDeckReviews(deck);
-        for (let tuple of rawResult.result) {
-            const cardId = tuple[1];
+        for (const reviewedCard of rawResult.result) {
+            const cardId = reviewedCard.cardID;
             const note = allNotes.find(note => note.cards.indexOf(cardId) !== -1);
             if (!note) {
                 log.error(`Could not match card ${cardId}`);
