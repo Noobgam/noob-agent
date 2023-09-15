@@ -9,6 +9,7 @@ interface AnkiConnectRequest {
 }
 
 interface NoteInfo {
+    noteId: number;
     cards: number[],
     fields: {
         noteId: number;
@@ -87,14 +88,15 @@ export class AnkiClient {
                 return {
                     result: res.result.map(tuple => {
                         return {
-                            reviewTime: tuple[0],
-                            cardID: tuple[1],
+                            reviewId: tuple[0],
+                            cardId: tuple[1],
                             usn: tuple[2],
                             buttonPressed: tuple[3],
-                            newInterval: tuple[4],
-                            newFactor: tuple[5],
-                            reviewDuration: tuple[6],
-                            reviewType: tuple[7],
+                            previousInterval: tuple[4],
+                            newInterval: tuple[5],
+                            newFactor: tuple[6],
+                            reviewDurationMs: tuple[7],
+                            reviewType: tuple[8],
                         } as ReviewedCard
                     })
                 }

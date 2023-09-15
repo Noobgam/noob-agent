@@ -8,7 +8,7 @@ export async function collectSnapshot(anki: AnkiClient) {
     log.info(`Fetching deck cards`);
     for (const deck of decks) {
         const deckResult = (await anki.getDeckReviews(deck)).result;
-        cardsToFetch.push(...deckResult.flatMap(d => d.cardID))
+        cardsToFetch.push(...deckResult.flatMap(d => d.cardId))
     }
     const noteIds = (await anki.cardsToNotes(cardsToFetch)).result;
     log.info(`Fetching ${noteIds.length} notes`);
@@ -19,7 +19,7 @@ export async function collectSnapshot(anki: AnkiClient) {
     for (const deck of decks) {
         const rawResult = await anki.getDeckReviews(deck);
         for (const reviewedCard of rawResult.result) {
-            const cardId = reviewedCard.cardID;
+            const cardId = reviewedCard.cardId;
             const note = allNotes.find(note => note.cards.indexOf(cardId) !== -1);
             if (!note) {
                 log.error(`Could not match card ${cardId}`);
