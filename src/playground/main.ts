@@ -2,7 +2,7 @@ import {AnkiClient} from "../anki/client";
 import {globalConfig, log} from "../config";
 import fetch from "node-fetch";
 import {ReviewedCard} from "../anki/model";
-import { createClient } from '@clickhouse/client' // or '@clickhouse/client-web'
+import {insertNoteInfo, insertReviewedCards} from "../clickhouse/anki_client";
 
 const ankiClient = new AnkiClient(globalConfig.anki);
 
@@ -12,22 +12,33 @@ const res = await ankiClient.findNotes(deckName);
 const notes = await ankiClient.getNotesInfo(res.result).then(r => r.result);
 const decks = (await ankiClient.getDeckNames()).result;
 const results: ReviewedCard[] = []
+const cardsToFetch: number[] = [];
 log.info(`Fetching deck cards`);
 for (const deck of decks) {
     const deckResult = (await ankiClient.getDeckReviews(deck)).result;
+
+    await insertReviewedCards(deckResult.map(card => {
+        return {
+            ...card,
+            deckName: deck
+        }
+    }));
     results.push(...deckResult)
+    cardsToFetch.push(...deckResult.flatMap(d => d.cardId))
 }
-const client = createClient({
-    username: process.env['CLICKHOUSE_USERNAME'],
-    password: process.env['CLICKHOUSE_PASSWORD'],
-    host: process.env['CLICKHOUSE_HOST'],
-    /* configuration */
-});
-await client.insert({
-    table: 'raw_anki_reviews',
-    values: results,
-    format: "JSONEachRow",
-});
+
+const noteIds = (await ankiClient.cardsToNotes(cardsToFetch)).result;
+log.info(`Fetching ${noteIds.length} notes`);
+const allNotes = (await ankiClient.notesInfo(noteIds)).result;
+
+await insertNoteInfo(allNotes.map(note => {
+    // explicit unpack to remove extra fields
+    return {
+        noteId: note.noteId,
+        cards: note.cards,
+        tags: note.tags,
+    }
+}))
 
 const extractJson = (s: string) => {
     const codeMarkup = '```';

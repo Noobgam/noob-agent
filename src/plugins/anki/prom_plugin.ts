@@ -4,7 +4,7 @@ import {AnkiClient} from "../../anki/client";
 import {collectSnapshot} from "./collect_snapshot";
 import {ankiRegistry} from "../../prometheus/metrics";
 
-export class AnkiPlugin extends PrometheusPlugin {
+export class AnkiPromPlugin extends PrometheusPlugin {
     metricsCollected: boolean;
     ankiClient: AnkiClient;
 

@@ -11,6 +11,8 @@ export function noopConcurrentInterval(name: string, callable: () => Promise<voi
             try {
                 running = true;
                 await callable();
+            } catch (e: any) {
+                log.error(e);
             } finally {
                 running = false;
             }

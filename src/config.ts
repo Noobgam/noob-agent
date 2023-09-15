@@ -29,6 +29,6 @@ export const configureFromEnvironment: () => Config = () => {
 }
 
 export const log: Logger<ILogObj> = new Logger({
-    type: "json",
+    type: process.env["LOCAL_START"] ? "pretty" : "json",
 });
 export const globalConfig: Config = configureFromEnvironment();

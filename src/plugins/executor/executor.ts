@@ -15,15 +15,12 @@ export class Executor {
     }
 
     registerPlugin(plugin: Plugin) {
+        log.info(`Registering plugin ${plugin.getName()}`);
         // we don't want to actually wait for the first interval, right
         noopConcurrentInterval(
             plugin.getName(),
             async () => {
-                try {
                     await plugin.executePluginCron();
-                } catch (e) {
-                    log.error(e);
-                }
             }, plugin.getExecutionDelayMs()
         )
         if (plugin instanceof PrometheusPlugin) {

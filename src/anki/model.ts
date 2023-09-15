@@ -1,11 +1,11 @@
 export interface ReviewedCard {
-    reviewTime: number;
-    cardID: number;
+    reviewId: number;
+    cardId: number;
     usn: number;
     buttonPressed: number;
     newInterval: number;
     previousInterval: number;
     newFactor: number;
-    reviewDuration: number;
+    reviewDurationMs: number;
     reviewType: number;
 }
