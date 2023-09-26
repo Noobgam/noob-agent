@@ -75,6 +75,29 @@ export class AnkiClient {
         }).then(data => data as ({ result: string[] }))
     }
 
+    async createDeck(deckName: string): Promise<void> {
+        await this.ankiRequest(this.config, {
+            action: 'createDeck',
+            params: {
+                deck: deckName
+            }
+        })
+    }
+
+    async addNotes(notes: {
+        deckName: string,
+        modelName: string;
+        fields: Record<string, string>,
+        tags: string[]
+    }[]): Promise<void> {
+        await this.ankiRequest(this.config, {
+            action: 'addNotes',
+            params: {
+                notes: notes
+            }
+        })
+    }
+
     // (reviewTime, cardID, usn, buttonPressed, newInterval, previousInterval, newFactor, reviewDuration, reviewType)
     async getDeckReviews(deckName: string, startId?: number): Promise<{ result: ReviewedCard[] }> {
         return this.ankiRequest(this.config, {

@@ -20,3 +20,13 @@ export function noopConcurrentInterval(name: string, callable: () => Promise<voi
         intervalMs
     )
 }
+
+export function throwException<T>(msg: string): T {
+    throw new Error(msg)
+}
+
+export function partition<T>(array: T[], isValid: (elem: T) => boolean): [T[], T[]] {
+    let pass: T[] = [], fail: T[] = [];
+    array.forEach((e) => (isValid(e) ? pass : fail).push(e));
+    return [pass, fail];
+}
