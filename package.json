@@ -10,7 +10,7 @@
     "start": "node ./dist/bundle.cjs",
     "playground-index": "ts-node --esm ./src/index.ts",
     "playground": "ts-node --esm ./src/playground/main.ts",
-    "install-win-service": "ts-node --esm ./src/installer/install.ts",
+    "install-win-service": "yarn release && ts-node --esm ./src/installer/install.ts",
     "rebuild-win-service": "yarn release && ts-node --esm ./src/installer/restart.ts",
     "uninstall-win-service": "ts-node --esm ./src/installer/uninstall.ts"
   },

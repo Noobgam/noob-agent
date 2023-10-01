@@ -1,6 +1,11 @@
 import {RawAnkiCardType} from "../models/anki";
 import fetch from "node-fetch";
 import {throwException} from "../utils/functional";
+import {getLog} from "../config";
+
+const log = getLog({
+    name: "MonorepoClient",
+})
 
 export class MonorepoClient {
     endpoint: string;
@@ -23,6 +28,7 @@ export class MonorepoClient {
             }
         });
         const jsonRes = await res.json();
+        log.info(`Received response ${JSON.stringify(jsonRes)}`);
         return (jsonRes as { cards: RawAnkiCardType[]}).cards;
     }
 }

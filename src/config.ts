@@ -32,4 +32,12 @@ export const log: Logger<ILogObj> = new Logger({
     type: "pretty",
     stylePrettyLogs: !!process.env["LOCAL_START"],
 });
+
+export const getLog = ({ name } : { name: string }) => {
+    return new Logger({
+        name,
+        type: "pretty",
+        stylePrettyLogs: !!process.env["LOCAL_START"],
+    })
+}
 export const globalConfig: Config = configureFromEnvironment();
