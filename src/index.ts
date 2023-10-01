@@ -18,7 +18,7 @@ new Executor(
             getObsidianClient(),
             monorepoClient,
             {
-                languageDiariesPrefix: 'Languages/Deutsch/',
+                languageDiariesPrefix: 'Languages/',
                 unprocessedTag: '#unprocessed_obsidianki',
                 processedTag: '#processed_obsidianki'
             }
