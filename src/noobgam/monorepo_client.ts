@@ -16,11 +16,12 @@ export class MonorepoClient {
         this.token = token;
     }
 
-    async convertDiaryToCards(diary: string): Promise<RawAnkiCardType[]> {
+    async convertDiaryToCards(diary: string, language: string): Promise<RawAnkiCardType[]> {
         const res = await fetch(this.endpoint + "/anki/generateCardsFromDiary", {
             method: 'POST',
             body: JSON.stringify({
-                diary: diary
+                diary: diary,
+                language: language,
             }),
             headers: {
                 'Content-Type': 'application/json',
