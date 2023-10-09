@@ -15,6 +15,10 @@ export class Executor {
     }
 
     registerPlugin(plugin: Plugin) {
+        if (plugin.config.disabled) {
+            log.info(`Ignoring plugin ${plugin.getName()}`);
+            return;
+        }
         log.info(`Registering plugin ${plugin.getName()}`);
         // we don't want to actually wait for the first interval, right
         noopConcurrentInterval(

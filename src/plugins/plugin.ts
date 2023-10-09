@@ -1,6 +1,20 @@
 import {Registry} from "prom-client";
 
+export type PluginConfig = {
+    disabled: boolean;
+}
+
+const defaultConfig: PluginConfig = {
+    disabled: true,
+}
+
 export abstract class Plugin {
+
+    config: PluginConfig;
+
+    constructor(config: PluginConfig = defaultConfig) {
+        this.config = config;
+    }
 
     abstract getName(): string;
     /**
