@@ -8,7 +8,7 @@ interface AnkiConnectRequest {
     params?: object;
 }
 
-interface NoteInfo {
+export interface NoteInfo {
     noteId: number;
     cards: number[],
     fields: {

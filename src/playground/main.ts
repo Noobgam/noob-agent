@@ -2,7 +2,7 @@ import {AnkiClient} from "../anki/client";
 import {globalConfig, log} from "../config";
 import fetch from "node-fetch";
 import {ReviewedCard} from "../anki/model";
-import {insertNoteInfo, insertReviewedCards} from "../clickhouse/anki_client";
+import {insertNoteInfo, insertReviewedCards} from "../mysql/anki_client";
 
 const ankiClient = new AnkiClient(globalConfig.anki);
 
@@ -31,14 +31,7 @@ const noteIds = (await ankiClient.cardsToNotes(cardsToFetch)).result;
 log.info(`Fetching ${noteIds.length} notes`);
 const allNotes = (await ankiClient.notesInfo(noteIds)).result;
 
-await insertNoteInfo(allNotes.map(note => {
-    // explicit unpack to remove extra fields
-    return {
-        noteId: note.noteId,
-        cards: note.cards,
-        tags: note.tags,
-    }
-}))
+await insertNoteInfo(allNotes)
 
 const extractJson = (s: string) => {
     const codeMarkup = '```';

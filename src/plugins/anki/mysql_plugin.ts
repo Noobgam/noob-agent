@@ -1,62 +1,55 @@
 import {Plugin, PluginConfig} from "../plugin";
 import {AnkiClient} from "../../anki/client";
-import {ClickHouseClient} from "@clickhouse/client";
-import {insertNoteInfo, insertReviewedCards} from "../../clickhouse/anki_client";
+import {insertNoteInfo, insertReviewedCards} from "../../mysql/anki_client";
 import {getLog} from "../../config";
-import {clickHouseClient} from "../../clickhouse/client";
+import {ping} from "../../mysql/anki_client";
+import {ReviewedCard} from "../../anki/model";
 
 const log = getLog({
-    name: "clickhouse"
+    name: "mysql-anki-plugin"
 })
 
-export class AnkiClickhousePlugin extends Plugin {
+export class AnkiMysqlPlugin extends Plugin {
 
     ankiClient: AnkiClient;
-    clickHouseClient: ClickHouseClient;
 
-    constructor(config: PluginConfig, ankiClient: AnkiClient, clickHouseClient: ClickHouseClient) {
+    constructor(config: PluginConfig, ankiClient: AnkiClient) {
         super(config);
         this.ankiClient = ankiClient;
-        this.clickHouseClient = clickHouseClient;
     }
 
     getName(): string {
-        return "clickhouseAnkiCollector";
+        return "mysqlAnkiCollector";
     }
 
     async readyCheck(): Promise<boolean> {
         const ankiUp = await this.ankiClient.ankiIsUp();
-        const chPingResult = await clickHouseClient.ping();
-        return ankiUp && chPingResult.success;
+        const mysqlUp = await ping()
+        return ankiUp && mysqlUp;
     }
 
     async executePluginCron(): Promise<void> {
         const decks = (await this.ankiClient.getDeckNames()).result;
         const cardsToFetch: number[] = [];
+        const reviews: (ReviewedCard & { deckName: string }) [] = []
         for (const deck of decks) {
             const deckResult = (await this.ankiClient.getDeckReviews(deck)).result;
-            await insertReviewedCards(deckResult.map(card => {
+            reviews.push(...deckResult.map(card => {
                 return {
                     ...card,
                     deckName: deck
                 }
-            }));
+            }))
             cardsToFetch.push(...deckResult.flatMap(d => d.cardId))
         }
+        await insertReviewedCards(reviews);
         const noteIds = (await this.ankiClient.cardsToNotes(cardsToFetch)).result;
         log.info(`Fetching ${noteIds.length} notes`);
         const allNotes = (await this.ankiClient.notesInfo(noteIds)).result;
-        await insertNoteInfo(allNotes.map(note => {
-            // explicit unpack to remove extra fields
-            return {
-                noteId: note.noteId,
-                cards: note.cards,
-                tags: note.tags,
-            }
-        }))
+        await insertNoteInfo(allNotes)
     }
 
     getExecutionDelayMs(): number {
-        return 30000;
+        return 1000;
     }
 }
