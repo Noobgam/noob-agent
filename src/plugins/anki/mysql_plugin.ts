@@ -50,6 +50,6 @@ export class AnkiMysqlPlugin extends Plugin {
     }
 
     getExecutionDelayMs(): number {
-        return 1000;
+        return 30000;
     }
 }
