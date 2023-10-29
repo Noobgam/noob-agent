@@ -11,9 +11,23 @@ import {clickHouseClient} from "./clickhouse/client";
 const ankiClient = new AnkiClient(globalConfig.anki);
 new Executor(
     [
-        new AnkiClickhousePlugin(ankiClient, clickHouseClient),
-        new AnkiPromPlugin(ankiClient),
+        new AnkiClickhousePlugin(
+            {
+                disabled: false
+            },
+            ankiClient,
+            clickHouseClient
+        ),
+        new AnkiPromPlugin(
+            {
+                disabled: false,
+            },
+            ankiClient
+        ),
         new ObsidianDiaryPlugin(
+            {
+                disabled: false,
+            },
             ankiClient,
             getObsidianClient(),
             monorepoClient,

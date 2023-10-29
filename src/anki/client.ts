@@ -17,6 +17,8 @@ interface NoteInfo {
     tags: string[];
 }
 
+const ANKI_CONNECT_VERSION = 6;
+
 export class AnkiClient {
     config: AnkiConfig;
 
@@ -24,19 +26,30 @@ export class AnkiClient {
         this.config = config;
     }
 
-    async ankiRequest(config: AnkiConfig, request: AnkiConnectRequest) {
-        log.info(`Doing request ${JSON.stringify({
+    private async ankiRequest(config: AnkiConfig, request: AnkiConnectRequest, silent: boolean = false) {
+        const stringifiedBody = JSON.stringify({
             ...request,
-            version: 6,
-        })}`)
+            version: ANKI_CONNECT_VERSION,
+        });
+        if (!silent) {
+            log.info(`Doing request ${stringifiedBody}`)
+        }
         const res = await fetch(config.url, {
             method: 'POST',
-            body: JSON.stringify({
-                ...request,
-                version: 6,
-            }),
+            body: stringifiedBody,
         });
         return await res.json();
+    }
+
+    async ankiIsUp() : Promise<boolean>{
+        try {
+            const res = await this.ankiRequest(this.config, {
+                action: 'version',
+            }, true).then(data => data as ({ result: number }))
+            return res.result == 6;
+        } catch (e) {
+            return false;
+        }
     }
 
     async findNotes(deckName: string): Promise<{ result: number[] }> {

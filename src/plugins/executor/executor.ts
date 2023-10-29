@@ -24,7 +24,10 @@ export class Executor {
         noopConcurrentInterval(
             plugin.getName(),
             async () => {
+                const ready = await plugin.readyCheck();
+                if (ready) {
                     await plugin.executePluginCron();
+                }
             }, plugin.getExecutionDelayMs()
         )
         if (plugin instanceof PrometheusPlugin) {

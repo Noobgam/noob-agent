@@ -23,6 +23,10 @@ export abstract class Plugin {
     abstract executePluginCron(): Promise<void>;
 
     abstract getExecutionDelayMs(): number;
+
+    async readyCheck(): Promise<boolean> {
+        return true;
+    }
 }
 
 export abstract class PrometheusPlugin extends Plugin {

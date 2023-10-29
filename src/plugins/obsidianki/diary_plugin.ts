@@ -1,4 +1,4 @@
-import {Plugin} from "../plugin";
+import {Plugin, PluginConfig} from "../plugin";
 import {ObsidianClient} from "../../obsidian/client";
 import {AnkiClient} from "../../anki/client";
 import {log} from "../../config";
@@ -15,18 +15,18 @@ export class ObsidianDiaryPlugin extends Plugin {
     ankiClient: AnkiClient
     obsidianClient: ObsidianClient
     monorepoClient: MonorepoClient;
-    config: ObsidianDiaryPluginConfig;
+    obsidianConfig: ObsidianDiaryPluginConfig;
 
-    constructor(ankiClient: AnkiClient, obsidianClient: ObsidianClient, monorepoClient: MonorepoClient, config: ObsidianDiaryPluginConfig) {
-        super();
+    constructor(config: PluginConfig, ankiClient: AnkiClient, obsidianClient: ObsidianClient, monorepoClient: MonorepoClient, obsidianConfig: ObsidianDiaryPluginConfig) {
+        super(config);
         this.ankiClient = ankiClient;
         this.obsidianClient = obsidianClient;
         this.monorepoClient = monorepoClient;
-        this.config = config;
+        this.obsidianConfig = obsidianConfig;
     }
 
     private async collectFiles(prefix: string): Promise<string[]> {
-        const res = await this.obsidianClient.searchFilesByText(this.config.unprocessedTag);
+        const res = await this.obsidianClient.searchFilesByText(this.obsidianConfig.unprocessedTag);
         return res.filter(x => x.startsWith(prefix))
     }
 
@@ -35,7 +35,7 @@ export class ObsidianDiaryPlugin extends Plugin {
     }
 
     async executePluginCron(): Promise<void> {
-        const listOfFiles = await this.collectFiles(this.config.languageDiariesPrefix);
+        const listOfFiles = await this.collectFiles(this.obsidianConfig.languageDiariesPrefix);
         log.info(`Detected unprocessed files: ${listOfFiles}`);
         for (let fileName of listOfFiles) {
             const fileContent = await this.obsidianClient.getFile(fileName);
@@ -70,10 +70,10 @@ export class ObsidianDiaryPlugin extends Plugin {
             await this.ankiClient.addNotes(notes)
             log.info(cards);
 
-            fileContent.replaceAll(this.config.unprocessedTag, this.config.processedTag);
+            fileContent.replaceAll(this.obsidianConfig.unprocessedTag, this.obsidianConfig.processedTag);
             await this.obsidianClient.putFile(
                 fileName,
-                fileContent.replaceAll(this.config.unprocessedTag, this.config.processedTag)
+                fileContent.replaceAll(this.obsidianConfig.unprocessedTag, this.obsidianConfig.processedTag)
             )
         }
 

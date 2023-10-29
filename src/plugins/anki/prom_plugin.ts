@@ -1,4 +1,4 @@
-import {PrometheusPlugin} from "../plugin";
+import {PluginConfig, PrometheusPlugin} from "../plugin";
 import {Registry} from "prom-client";
 import {AnkiClient} from "../../anki/client";
 import {collectSnapshot} from "./collect_snapshot";
@@ -8,8 +8,8 @@ export class AnkiPromPlugin extends PrometheusPlugin {
     metricsCollected: boolean;
     ankiClient: AnkiClient;
 
-    constructor(ankiClient: AnkiClient) {
-        super();
+    constructor(config: PluginConfig, ankiClient: AnkiClient) {
+        super(config);
         this.metricsCollected = false;
         this.ankiClient = ankiClient;
     }

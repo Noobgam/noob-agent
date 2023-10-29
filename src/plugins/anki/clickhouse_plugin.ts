@@ -1,22 +1,33 @@
-import {Plugin} from "../plugin";
+import {Plugin, PluginConfig} from "../plugin";
 import {AnkiClient} from "../../anki/client";
 import {ClickHouseClient} from "@clickhouse/client";
 import {insertNoteInfo, insertReviewedCards} from "../../clickhouse/anki_client";
-import {log} from "../../config";
+import {getLog} from "../../config";
+import {clickHouseClient} from "../../clickhouse/client";
+
+const log = getLog({
+    name: "clickhouse"
+})
 
 export class AnkiClickhousePlugin extends Plugin {
 
     ankiClient: AnkiClient;
     clickHouseClient: ClickHouseClient;
 
-    constructor(ankiClient: AnkiClient, clickHouseClient: ClickHouseClient) {
-        super();
+    constructor(config: PluginConfig, ankiClient: AnkiClient, clickHouseClient: ClickHouseClient) {
+        super(config);
         this.ankiClient = ankiClient;
         this.clickHouseClient = clickHouseClient;
     }
 
     getName(): string {
         return "clickhouseAnkiCollector";
+    }
+
+    async readyCheck(): Promise<boolean> {
+        const ankiUp = await this.ankiClient.ankiIsUp();
+        const chPingResult = await clickHouseClient.ping();
+        return ankiUp && chPingResult.success;
     }
 
     async executePluginCron(): Promise<void> {
