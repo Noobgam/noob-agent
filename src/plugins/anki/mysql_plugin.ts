@@ -4,6 +4,7 @@ import {insertNoteInfo, insertReviewedCards} from "../../mysql/anki_client";
 import {getLog} from "../../config";
 import {ping} from "../../mysql/anki_client";
 import {ReviewedCard} from "../../anki/model";
+import {AllPluginNames, MYSQL_ANKI_COLLECTOR_PLUGIN_NAME} from "../registry";
 
 const log = getLog({
     name: "mysql-anki-plugin"
@@ -18,8 +19,8 @@ export class AnkiMysqlPlugin extends Plugin {
         this.ankiClient = ankiClient;
     }
 
-    getName(): string {
-        return "mysqlAnkiCollector";
+    getName(): AllPluginNames {
+        return MYSQL_ANKI_COLLECTOR_PLUGIN_NAME;
     }
 
     async readyCheck(): Promise<boolean> {

@@ -1,11 +1,12 @@
 import {Registry} from "prom-client";
+import {AllPluginNames} from "./registry";
 
 export type PluginConfig = {
     disabled: boolean;
 }
 
 const defaultConfig: PluginConfig = {
-    disabled: true,
+    disabled: false,
 }
 
 export abstract class Plugin {
@@ -16,7 +17,7 @@ export abstract class Plugin {
         this.config = config;
     }
 
-    abstract getName(): string;
+    abstract getName(): AllPluginNames;
     /**
      * Is executed by the orchestrator
      */

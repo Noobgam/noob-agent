@@ -3,20 +3,28 @@ import {noopConcurrentInterval} from "../../utils/functional";
 import {Pushgateway} from "prom-client";
 import {PrometheusConfig} from "../../prometheus/config";
 import {log} from "../../config";
+import {GlobalPluginConfiguration} from "../registry";
 
 export class Executor {
+    pluginConfig: GlobalPluginConfiguration;
     registeredPlugins: Plugin[];
     prometheusConfig: PrometheusConfig;
 
-    constructor(plugins: Plugin[], prometheusConfig: PrometheusConfig) {
+    constructor(pluginConfig: GlobalPluginConfiguration, plugins: Plugin[], prometheusConfig: PrometheusConfig) {
+        this.pluginConfig = pluginConfig;
         this.registeredPlugins = [];
         this.prometheusConfig = prometheusConfig;
         plugins.forEach(plugin => this.registerPlugin(plugin))
     }
 
     registerPlugin(plugin: Plugin) {
+        const globalConf = this.pluginConfig[plugin.getName()];
+        if (globalConf && !globalConf.enabled) {
+            log.info(`Ignoring plugin ${plugin.getName()}, disabled in global config`);
+            return;
+        }
         if (plugin.config.disabled) {
-            log.info(`Ignoring plugin ${plugin.getName()}`);
+            log.info(`Ignoring plugin ${plugin.getName()}, disabled in code`);
             return;
         }
         log.info(`Registering plugin ${plugin.getName()}`);

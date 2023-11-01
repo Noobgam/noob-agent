@@ -6,9 +6,28 @@ import {getObsidianClient} from "./obsidian/client";
 import {monorepoClient} from "./noobgam/monorepo_client";
 import {AnkiPromPlugin} from "./plugins/anki/prom_plugin";
 import {AnkiMysqlPlugin} from "./plugins/anki/mysql_plugin";
+import {
+    MYSQL_ANKI_COLLECTOR_PLUGIN_NAME,
+    OBSIDIAN_DIARY_PLUGIN_NAME,
+    GlobalPluginConfiguration,
+    PROMETHEUS_ANKI_COLLECTOR_PLUGIN_NAME
+} from "./plugins/registry";
 
 const ankiClient = new AnkiClient(globalConfig.anki);
+const pluginConfig: GlobalPluginConfiguration = {
+    [MYSQL_ANKI_COLLECTOR_PLUGIN_NAME]: {
+        enabled: true,
+    },
+    [OBSIDIAN_DIARY_PLUGIN_NAME]: {
+        enabled: true,
+    },
+    [PROMETHEUS_ANKI_COLLECTOR_PLUGIN_NAME]: {
+        enabled: true,
+    }
+}
+
 new Executor(
+    pluginConfig,
     [
         new AnkiMysqlPlugin(
             {

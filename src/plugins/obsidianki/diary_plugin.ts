@@ -3,6 +3,7 @@ import {ObsidianClient} from "../../obsidian/client";
 import {AnkiClient} from "../../anki/client";
 import {log} from "../../config";
 import {MonorepoClient} from "../../noobgam/monorepo_client";
+import {AllPluginNames, OBSIDIAN_DIARY_PLUGIN_NAME} from "../registry";
 
 export type ObsidianDiaryPluginConfig = {
     languageDiariesPrefix: string;
@@ -30,8 +31,8 @@ export class ObsidianDiaryPlugin extends Plugin {
         return res.filter(x => x.startsWith(prefix))
     }
 
-    getName(): string {
-        return "obsidianDiary";
+    getName(): AllPluginNames {
+        return OBSIDIAN_DIARY_PLUGIN_NAME;
     }
 
 
@@ -84,7 +85,7 @@ export class ObsidianDiaryPlugin extends Plugin {
     async executePluginCron(): Promise<void> {
         const listOfFiles = await this.collectFiles(this.obsidianConfig.languageDiariesPrefix);
         log.info(`Detected unprocessed files: ${listOfFiles}`);
-        for (let fileName of listOfFiles) {
+        for (const fileName of listOfFiles) {
             // this could be parallel, but I don't want to do it right now
             await this.processFile(fileName);
         }

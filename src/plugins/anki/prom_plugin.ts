@@ -3,6 +3,7 @@ import {Registry} from "prom-client";
 import {AnkiClient} from "../../anki/client";
 import {collectSnapshot} from "./collect_snapshot";
 import {ankiRegistry} from "../../prometheus/metrics";
+import {AllPluginNames, PROMETHEUS_ANKI_COLLECTOR_PLUGIN_NAME} from "../registry";
 
 export class AnkiPromPlugin extends PrometheusPlugin {
     metricsCollected: boolean;
@@ -14,8 +15,8 @@ export class AnkiPromPlugin extends PrometheusPlugin {
         this.ankiClient = ankiClient;
     }
 
-    getName(): string {
-        return "ankiCardCollector";
+    getName(): AllPluginNames {
+        return PROMETHEUS_ANKI_COLLECTOR_PLUGIN_NAME;
     }
 
     async executePluginCron(): Promise<void> {

@@ -26,7 +26,7 @@ export function throwException<T>(msg: string): T {
 }
 
 export function partition<T>(array: T[], isValid: (elem: T) => boolean): [T[], T[]] {
-    let pass: T[] = [], fail: T[] = [];
+    const pass: T[] = [], fail: T[] = [];
     array.forEach((e) => (isValid(e) ? pass : fail).push(e));
     return [pass, fail];
 }

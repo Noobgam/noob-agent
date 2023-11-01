@@ -12,10 +12,9 @@ export async function collectSnapshot(anki: AnkiClient) {
     }
     const noteIds = (await anki.cardsToNotes(cardsToFetch)).result;
     log.info(`Fetching ${noteIds.length} notes`);
-    // @ts-ignore
     const allNotes = (await anki.notesInfo(noteIds)).result;
     log.info(`Done fetching notes`);
-    let tmpMetrics = new Map<string, Map<string, number>>();
+    const tmpMetrics = new Map<string, Map<string, number>>();
     for (const deck of decks) {
         const rawResult = await anki.getDeckReviews(deck);
         for (const reviewedCard of rawResult.result) {
