@@ -1,5 +1,4 @@
 import {AnkiConfig} from "../plugins/anki/anki_config";
-import fetch from "node-fetch";
 import {ReviewedCard} from "./model";
 import {log} from "../config";
 
