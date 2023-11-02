@@ -10,11 +10,11 @@
     "start": "node ./dist/bundle.cjs",
     "lint:fix": "eslint . --ext .ts --fix",
     "lint": "eslint . --ext .ts",
-    "playground-index": "ts-node --esm ./src/index.ts",
-    "playground": "ts-node --esm ./src/playground/main.ts",
-    "install-win-service": "yarn release && ts-node --esm ./src/installer/install.ts",
-    "rebuild-win-service": "yarn release && ts-node --esm ./src/installer/restart.ts",
-    "uninstall-win-service": "ts-node --esm ./src/installer/uninstall.ts"
+    "playground-index": "node --loader ts-node/esm ./src/index.ts",
+    "playground": "node --loader ts-node/esm ./src/playground/main.ts",
+    "install-win-service": "yarn release && node --loader ts-node/esm ./src/installer/install.ts",
+    "rebuild-win-service": "yarn release && node --loader ts-node/esm ./src/installer/restart.ts",
+    "uninstall-win-service": "node --loader ts-node/esm ./src/installer/uninstall.ts"
   },
   "type": "module",
   "keywords": [],
