@@ -7,7 +7,7 @@ export interface Config {
     anki: AnkiConfig;
 }
 
-function requiredEnv(name: string): string {
+export function requiredEnv(name: string): string {
     const res = process.env[name];
     if (!res) {
         throw Error(`Environment variable ${name} is not defined`);

@@ -30,3 +30,14 @@ export function partition<T>(array: T[], isValid: (elem: T) => boolean): [T[], T
     array.forEach((e) => (isValid(e) ? pass : fail).push(e));
     return [pass, fail];
 }
+
+export function groupBy<T, K extends keyof any>(array: T[], getKey: (item: T) => K): Record<K, T[]> {
+    return array.reduce((accumulator, item) => {
+        const key = getKey(item);
+        if (!accumulator[key]) {
+            accumulator[key] = [];
+        }
+        accumulator[key].push(item);
+        return accumulator;
+    }, {} as Record<K, T[]>);
+}
