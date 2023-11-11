@@ -29,3 +29,22 @@ export async function withConnection<T>(callable: (connection: Connection) => Pr
     }
 }
 
+export async function withTransaction<T>(callable: (connection: Connection) => Promise<T>) {
+    const conn = await getConnection();
+    await conn.beginTransaction();
+    try {
+        const res = await callable(conn);
+        await conn.commit();
+        return res;
+    } finally {
+        conn.release();
+    }
+}
+
+export async function ping(): Promise<boolean> {
+    return await withConnection(async conn => {
+        const [rows] = await conn.query("SELECT 1 as col");
+        return (rows as any[])[0].col === 1;
+    })
+}
+

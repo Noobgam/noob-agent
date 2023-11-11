@@ -2,9 +2,9 @@ import {Plugin, PluginConfig} from "../plugin";
 import {AnkiClient} from "../../anki/client";
 import {insertNoteInfo, insertReviewedCards} from "../../mysql/anki_client";
 import {getLog} from "../../config";
-import {ping} from "../../mysql/anki_client";
 import {ReviewedCard} from "../../anki/model";
 import {AllPluginNames, MYSQL_ANKI_COLLECTOR_PLUGIN_NAME} from "../registry";
+import {ping} from "../../mysql/client";
 
 const log = getLog({
     name: "mysql-anki-plugin"
