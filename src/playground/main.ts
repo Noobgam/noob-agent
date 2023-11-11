@@ -1,6 +1,5 @@
 import {AnkiClient} from "../anki/client";
 import {globalConfig, log} from "../config";
-import fetch from "node-fetch";
 import {ReviewedCard} from "../anki/model";
 import {insertNoteInfo, insertReviewedCards} from "../mysql/anki_client";
 

@@ -1,6 +1,7 @@
 import {AnkiConfig} from "./plugins/anki/anki_config";
 import {PrometheusConfig} from "./prometheus/config";
-import {ILogObj, Logger} from "tslog";
+
+import pino from "pino";
 
 export interface Config {
     prometheus: PrometheusConfig;
@@ -28,16 +29,11 @@ export const configureFromEnvironment: () => Config = () => {
     }
 }
 
-export const log: Logger<ILogObj> = new Logger({
-    type: "pretty",
-    stylePrettyLogs: !!process.env["LOCAL_START"],
-});
+export const log = pino()
 
 export const getLog = ({ name } : { name: string }) => {
-    return new Logger({
+    return pino({
         name,
-        type: "pretty",
-        stylePrettyLogs: !!process.env["LOCAL_START"],
     })
 }
 export const globalConfig: Config = configureFromEnvironment();

@@ -1,4 +1,3 @@
-import fetch from "node-fetch";
 import {Assignment} from "./models";
 import {GetAssignmentOutput, GetAssignmentsSchema} from "./operations";
 

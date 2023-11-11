@@ -1,5 +1,4 @@
 import {RawAnkiCardType} from "../models/anki";
-import fetch from "node-fetch";
 import {throwException} from "../utils/functional";
 import {getLog} from "../config";
 
@@ -35,6 +34,6 @@ export class MonorepoClient {
 }
 
 export const monorepoClient = new MonorepoClient(
-    "https://monorepo.noobgam.com",
+    "http://monorepo.noobgam.com",
     process.env['NOOBGAM_PERSONAL_PASSWORD'] ?? throwException('personal password must be defined to use monorepo')
 )

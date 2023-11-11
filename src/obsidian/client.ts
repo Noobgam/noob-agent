@@ -1,7 +1,6 @@
-import fetch, {RequestInit, Response} from "node-fetch";
 import {throwException} from "../utils/functional";
-import * as https from "https";
 import {log} from "../config";
+import {Agent} from "undici";
 
 export class ObsidianClient {
     port: number;
@@ -14,16 +13,17 @@ export class ObsidianClient {
     }
 
     private async fetch(suffix: string, init?: RequestInit): Promise<Response> {
-        const httpsAgent = new https.Agent({
-            rejectUnauthorized: false,
-        });
         log.info(`Executing: https://127.0.0.1:${this.port}${suffix}`);
         return fetch(`https://127.0.0.1:${this.port}${suffix}`, {
             ...init,
             headers: {
                 'Authorization': `Bearer ${this.token}`,
             },
-            agent: httpsAgent
+            dispatcher: new Agent({
+                connect: {
+                    rejectUnauthorized: false,
+                }
+            })
         });
     }
 
