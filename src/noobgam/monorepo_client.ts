@@ -34,6 +34,6 @@ export class MonorepoClient {
 }
 
 export const monorepoClient = new MonorepoClient(
-    "http://monorepo.noobgam.com",
+    "https://monorepo.noobgam.com",
     process.env['NOOBGAM_PERSONAL_PASSWORD'] ?? throwException('personal password must be defined to use monorepo')
 )
