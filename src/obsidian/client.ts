@@ -1,6 +1,10 @@
 import {throwException} from "../utils/functional";
-import {log} from "../config";
 import {Agent} from "undici";
+import {getGlobalLog} from "../config";
+
+const getLog = () => getGlobalLog({
+    name: "obsidian-client"
+})
 
 export class ObsidianClient {
     port: number;
@@ -13,7 +17,7 @@ export class ObsidianClient {
     }
 
     private async fetch(suffix: string, init?: RequestInit): Promise<Response> {
-        log.info(`Executing: https://127.0.0.1:${this.port}${suffix}`);
+        getLog().info(`Executing: https://127.0.0.1:${this.port}${suffix}`);
         return fetch(`https://127.0.0.1:${this.port}${suffix}`, {
             ...init,
             headers: {

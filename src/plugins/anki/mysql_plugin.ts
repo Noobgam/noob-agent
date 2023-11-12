@@ -1,12 +1,12 @@
 import {Plugin, PluginConfig} from "../plugin";
 import {AnkiClient} from "../../anki/client";
 import {insertNoteInfo, insertReviewedCards} from "../../mysql/anki_client";
-import {getLog} from "../../config";
+import {getGlobalLog} from "../../config";
 import {ReviewedCard} from "../../anki/model";
 import {AllPluginNames, MYSQL_ANKI_COLLECTOR_PLUGIN_NAME} from "../registry";
 import {ping} from "../../mysql/client";
 
-const log = getLog({
+const getLog = () => getGlobalLog({
     name: "mysql-anki-plugin"
 })
 
@@ -45,7 +45,7 @@ export class AnkiMysqlPlugin extends Plugin {
         }
         await insertReviewedCards(reviews);
         const noteIds = (await this.ankiClient.cardsToNotes(cardsToFetch)).result;
-        log.info(`Fetching ${noteIds.length} notes`);
+        getLog().info(`Fetching ${noteIds.length} notes`);
         const allNotes = (await this.ankiClient.notesInfo(noteIds)).result;
         await insertNoteInfo(allNotes)
     }

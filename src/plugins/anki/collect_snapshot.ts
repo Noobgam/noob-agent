@@ -1,19 +1,23 @@
 import {metrics} from "../../prometheus/metrics";
 import {AnkiClient} from "../../anki/client";
-import {log} from "../../config";
+import {getGlobalLog} from "../../config";
+
+const getLog = () => getGlobalLog({
+    name: "anki-snapshot"
+})
 
 export async function collectSnapshot(anki: AnkiClient) {
     const decks = (await anki.getDeckNames()).result;
     const cardsToFetch: number[] = [];
-    log.info(`Fetching deck cards`);
+    getLog().info(`Fetching deck cards`);
     for (const deck of decks) {
         const deckResult = (await anki.getDeckReviews(deck)).result;
         cardsToFetch.push(...deckResult.flatMap(d => d.cardId))
     }
     const noteIds = (await anki.cardsToNotes(cardsToFetch)).result;
-    log.info(`Fetching ${noteIds.length} notes`);
+    getLog().info(`Fetching ${noteIds.length} notes`);
     const allNotes = (await anki.notesInfo(noteIds)).result;
-    log.info(`Done fetching notes`);
+    getLog().info(`Done fetching notes`);
     const tmpMetrics = new Map<string, Map<string, number>>();
     for (const deck of decks) {
         const rawResult = await anki.getDeckReviews(deck);
@@ -21,7 +25,7 @@ export async function collectSnapshot(anki: AnkiClient) {
             const cardId = reviewedCard.cardId;
             const note = allNotes.find(note => note.cards.indexOf(cardId) !== -1);
             if (!note) {
-                log.error(`Could not match card ${cardId}`);
+                getLog().error(`Could not match card ${cardId}`);
                 continue;
             }
             const languages =

@@ -1,4 +1,4 @@
-import {globalConfig, log, requiredEnv} from './config'
+import {getGlobalLog, globalConfig, requiredEnv} from './config'
 import {AnkiClient} from "./anki/client";
 import {Executor} from "./plugins/executor/executor";
 import {ObsidianDiaryPlugin} from "./plugins/obsidianki/diary_plugin";
@@ -65,4 +65,4 @@ new Executor(
     ],
     globalConfig.prometheus,
 )
-log.info("Started successfully");
+getGlobalLog().info("Started successfully");

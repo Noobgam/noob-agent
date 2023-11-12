@@ -1,7 +1,8 @@
 import {AnkiConfig} from "./plugins/anki/anki_config";
 import {PrometheusConfig} from "./prometheus/config";
 
-import pino from "pino";
+import pino, {Logger} from "pino";
+import {AsyncLocalStorage} from "async_hooks";
 
 export interface Config {
     prometheus: PrometheusConfig;
@@ -29,11 +30,19 @@ export const configureFromEnvironment: () => Config = () => {
     }
 }
 
-export const log = pino()
+const defaultLog = pino()
 
-export const getLog = ({ name } : { name: string }) => {
-    return pino({
-        name,
-    })
+const asyncLocalStorage = new AsyncLocalStorage<Logger>();
+
+export async function doWithLogger<T>(bindings: pino.Bindings, callable: () => T | Promise<T>): Promise<T> {
+    const logger = defaultLog.child(bindings);
+    return asyncLocalStorage.run(logger, async () => {
+        return callable();
+    });
+}
+
+export const getGlobalLog = (bindings?: pino.Bindings) => {
+    const logger = asyncLocalStorage.getStore() || defaultLog;
+    return bindings ? logger.child(bindings) : logger;
 }
 export const globalConfig: Config = configureFromEnvironment();

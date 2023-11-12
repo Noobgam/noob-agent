@@ -1,6 +1,9 @@
 import {AnkiConfig} from "../plugins/anki/anki_config";
 import {ReviewedCard} from "./model";
-import {log} from "../config";
+import {getGlobalLog} from "../config";
+const getLog = () => getGlobalLog({
+    name: "anki-client"
+})
 
 interface AnkiConnectRequest {
     action: string;
@@ -31,7 +34,7 @@ export class AnkiClient {
             version: ANKI_CONNECT_VERSION,
         });
         if (!silent) {
-            log.info(`Doing request ${stringifiedBody}`)
+            getLog().info(`Doing request ${stringifiedBody}`)
         }
         const res = await fetch(config.url, {
             method: 'POST',

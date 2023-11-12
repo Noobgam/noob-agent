@@ -2,8 +2,12 @@ import {Plugin, PrometheusPlugin} from "../plugin";
 import {noopConcurrentInterval} from "../../utils/functional";
 import {Pushgateway} from "prom-client";
 import {PrometheusConfig} from "../../prometheus/config";
-import {log} from "../../config";
+import {doWithLogger, getGlobalLog} from "../../config";
 import {GlobalPluginConfiguration} from "../registry";
+
+const getLog = () => getGlobalLog({
+    name: "plugin-executor"
+})
 
 export class Executor {
     pluginConfig: GlobalPluginConfiguration;
@@ -20,26 +24,30 @@ export class Executor {
     registerPlugin(plugin: Plugin) {
         const globalConf = this.pluginConfig[plugin.getName()];
         if (globalConf && !globalConf.enabled) {
-            log.info(`Ignoring plugin ${plugin.getName()}, disabled in global config`);
+            getLog().info(`Ignoring plugin ${plugin.getName()}, disabled in global config`);
             return;
         }
         if (plugin.config.disabled) {
-            log.info(`Ignoring plugin ${plugin.getName()}, disabled in code`);
+            getLog().info(`Ignoring plugin ${plugin.getName()}, disabled in code`);
             return;
         }
-        log.info(`Registering plugin ${plugin.getName()}`);
+        getLog().info(`Registering plugin ${plugin.getName()}`);
         // we don't want to actually wait for the first interval, right
         noopConcurrentInterval(
             plugin.getName(),
             async () => {
                 const ready = await plugin.readyCheck();
                 if (ready) {
-                    await plugin.executePluginCron();
+                    await doWithLogger({
+                        plugin: plugin.getName()
+                    }, async () => {
+                        await plugin.executePluginCron();
+                    })
                 }
             }, plugin.getExecutionDelayMs()
         )
         if (plugin instanceof PrometheusPlugin) {
-            log.info(`Registering prometheus plugin`);
+            getLog().info(`Registering prometheus plugin`);
             noopConcurrentInterval(
                 plugin.getName() + 'metricsPush',
                 async () => {
@@ -57,7 +65,7 @@ export class Executor {
                         plugin.getRegistry()
                     )
                     if (process.env['LOCAL_START'] === "true") {
-                        log.info(await plugin.getRegistry().metrics())
+                        getLog().info(await plugin.getRegistry().metrics())
                     } else {
                         await client.pushAdd({jobName: plugin.getJobName()});
                     }

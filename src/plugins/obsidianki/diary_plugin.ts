@@ -1,9 +1,13 @@
 import {Plugin, PluginConfig} from "../plugin";
 import {ObsidianClient} from "../../obsidian/client";
 import {AnkiClient} from "../../anki/client";
-import {log} from "../../config";
 import {MonorepoClient} from "../../noobgam/monorepo_client";
 import {AllPluginNames, OBSIDIAN_DIARY_PLUGIN_NAME} from "../registry";
+import {getGlobalLog} from "../../config";
+
+const getLog = () => getGlobalLog({
+    name: "diary-plugin"
+})
 
 export type ObsidianDiaryPluginConfig = {
     languageDiariesPrefix: string;
@@ -73,7 +77,7 @@ export class ObsidianDiaryPlugin extends Plugin {
             }
         });
         await this.ankiClient.addNotes(notes)
-        log.info(cards);
+        getLog().info(cards);
 
         fileContent.replaceAll(this.obsidianConfig.unprocessedTag, this.obsidianConfig.processedTag);
         await this.obsidianClient.putFile(
@@ -84,7 +88,7 @@ export class ObsidianDiaryPlugin extends Plugin {
 
     async executePluginCron(): Promise<void> {
         const listOfFiles = await this.collectFiles(this.obsidianConfig.languageDiariesPrefix);
-        log.info(`Detected unprocessed files: ${listOfFiles}`);
+        getLog().info(`Detected unprocessed files: ${listOfFiles}`);
         for (const fileName of listOfFiles) {
             // this could be parallel, but I don't want to do it right now
             await this.processFile(fileName);

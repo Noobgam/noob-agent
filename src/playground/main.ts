@@ -1,5 +1,5 @@
 import {AnkiClient} from "../anki/client";
-import {globalConfig, log} from "../config";
+import {getGlobalLog, globalConfig} from "../config";
 import {ReviewedCard} from "../anki/model";
 import {insertNoteInfo, insertReviewedCards} from "../mysql/anki_client";
 
@@ -12,7 +12,7 @@ const notes = await ankiClient.getNotesInfo(res.result).then(r => r.result);
 const decks = (await ankiClient.getDeckNames()).result;
 const results: ReviewedCard[] = []
 const cardsToFetch: number[] = [];
-log.info(`Fetching deck cards`);
+getGlobalLog().info(`Fetching deck cards`);
 for (const deck of decks) {
     const deckResult = (await ankiClient.getDeckReviews(deck)).result;
 
@@ -27,7 +27,7 @@ for (const deck of decks) {
 }
 
 const noteIds = (await ankiClient.cardsToNotes(cardsToFetch)).result;
-log.info(`Fetching ${noteIds.length} notes`);
+getGlobalLog().info(`Fetching ${noteIds.length} notes`);
 const allNotes = (await ankiClient.notesInfo(noteIds)).result;
 
 await insertNoteInfo(allNotes)
