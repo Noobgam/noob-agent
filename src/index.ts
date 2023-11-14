@@ -24,7 +24,7 @@ const pluginConfig: GlobalPluginConfiguration = {
         enabled: true,
     },
     [PROMETHEUS_ANKI_COLLECTOR_PLUGIN_NAME]: {
-        enabled: true,
+        enabled: false,
     },
     [WANIKANI_PROGRESS_PUBLISHER_PLUGIN_NAME]: {
         enabled: true,
