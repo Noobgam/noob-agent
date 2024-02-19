@@ -44,6 +44,7 @@ export async function withTransaction<T>(callable: (connection: Connection) => P
 export async function ping(): Promise<boolean> {
     return await withConnection(async conn => {
         const [rows] = await conn.query("SELECT 1 as col");
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
         return (rows as any[])[0].col === 1;
     })
 }
