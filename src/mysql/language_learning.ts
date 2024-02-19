@@ -10,7 +10,7 @@ export type LanguageLearningSnapshot = {
 
 export async function publishSnapshots(snapshots: LanguageLearningSnapshot[]) {
     await withTransaction(async conn => {
-        for (let snapshot of snapshots) {
+        for (const snapshot of snapshots) {
             const vals = [
                 snapshot.date.getTime(),
                 snapshot.language,

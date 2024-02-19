@@ -2,7 +2,7 @@ import mysql from 'mysql2';
 import {Connection} from "mysql2/promise";
 
 export const connectionPool = mysql.createPool({
-    host: 'monorepo.noobgam.com',
+    host: 'mysql.noobgam.com',
     port: 3306,
     user: 'noobgam',
     password: process.env["NOOBGAM_MYSQL_PASSWORD"],

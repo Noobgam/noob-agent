@@ -22,7 +22,7 @@ export class WanikaniProgressPublisher extends Plugin {
         const assignments = await this.wanikaniClient.fetchAllAssignments();
         const grouped = groupBy(assignments, ass => ass.srs_stage);
         const snapshots: LanguageLearningSnapshot[] = []
-        for (let k in grouped) {
+        for (const k in grouped) {
             const v = grouped[k]
             snapshots.push({
                 language: 'japanese',
