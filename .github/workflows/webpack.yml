@@ -44,7 +44,7 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           upload_url: ${{ steps.create_release.outputs.upload_url }}
-          asset_path: ./dist/bundle.js
-          asset_name: bundle.js
+          asset_path: ./dist/bundle.cjs
+          asset_name: bundle.cjs
           asset_content_type: application/binary
 
