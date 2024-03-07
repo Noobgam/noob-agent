@@ -42,7 +42,7 @@ export class ObsidianDiaryPlugin extends Plugin {
 
     async readyCheck(): Promise<boolean> {
         const ankiUp = await this.ankiClient.ankiIsUp();
-        const obsidianUp = (await this.obsidianClient.getFile("Random/PetProjects")) !== "";
+        const obsidianUp = (await this.obsidianClient.getFile("Random/PetProjects.md")) !== "";
         return ankiUp && obsidianUp;
     }
 
