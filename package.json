@@ -12,6 +12,7 @@
     "lint": "eslint . --ext .ts",
     "playground-index": "node --loader ts-node/esm ./src/index.ts",
     "playground": "node --loader ts-node/esm ./src/playground/main.ts",
+    "playground2": "node --loader ts-node/esm ./src/playground/main2.ts",
     "install-win-service": "yarn release && node --loader ts-node/esm ./src/installer/install.ts",
     "rebuild-win-service": "yarn release && node --loader ts-node/esm ./src/installer/restart.ts",
     "uninstall-win-service": "node --loader ts-node/esm ./src/installer/uninstall.ts"
@@ -32,10 +33,12 @@
   "devDependencies": {
     "@types/node": "^20.11.16",
     "@types/node-windows": "^0.1.6",
+    "@types/object-hash": "^3",
     "@typescript-eslint/eslint-plugin": "^6.21.0",
     "@typescript-eslint/parser": "^6.21.0",
     "eslint": "^8.56.0",
     "node-windows": "^1.0.0-beta.8",
+    "object-hash": "^3.0.0",
     "ts-loader": "^9.5.1",
     "ts-node": "^10.9.2",
     "webpack": "^5.90.1",

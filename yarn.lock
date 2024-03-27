@@ -278,6 +278,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@types/object-hash@npm:^3":
+  version: 3.0.6
+  resolution: "@types/object-hash@npm:3.0.6"
+  checksum: 10c0/a5450cafdbc33c840be2c36fb1ace96cce7aa580177cf68dbdbda80f18938207692d74c76403321c99f43460ac31981c4af7fe8b49eca1570f8e9a4c01eaf33d
+  languageName: node
+  linkType: hard
+
 "@types/semver@npm:^7.5.0":
   version: 7.5.7
   resolution: "@types/semver@npm:7.5.7"
@@ -1828,11 +1835,13 @@ __metadata:
   dependencies:
     "@types/node": "npm:^20.11.16"
     "@types/node-windows": "npm:^0.1.6"
+    "@types/object-hash": "npm:^3"
     "@typescript-eslint/eslint-plugin": "npm:^6.21.0"
     "@typescript-eslint/parser": "npm:^6.21.0"
     eslint: "npm:^8.56.0"
     mysql2: "npm:^3.9.1"
     node-windows: "npm:^1.0.0-beta.8"
+    object-hash: "npm:^3.0.0"
     pino: "npm:^8.18.0"
     prom-client: "npm:^15.1.0"
     ts-loader: "npm:^9.5.1"
@@ -1845,6 +1854,13 @@ __metadata:
     zod: "npm:^3.22.4"
   languageName: unknown
   linkType: soft
+
+"object-hash@npm:^3.0.0":
+  version: 3.0.0
+  resolution: "object-hash@npm:3.0.0"
+  checksum: 10c0/a06844537107b960c1c8b96cd2ac8592a265186bfa0f6ccafe0d34eabdb526f6fa81da1f37c43df7ed13b12a4ae3457a16071603bcd39d8beddb5f08c37b0f47
+  languageName: node
+  linkType: hard
 
 "on-exit-leak-free@npm:^2.1.0":
   version: 2.1.2

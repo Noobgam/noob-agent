@@ -105,12 +105,17 @@ export class AnkiClient {
         fields: Record<string, string>,
         tags: string[]
     }[]): Promise<void> {
-        await this.ankiRequest(this.config, {
+        if (notes.length === 0) {
+            return;
+        }
+        const resp = await this.ankiRequest(this.config, {
             action: 'addNotes',
             params: {
                 notes: notes
             }
         })
+        console.log(resp);
+
     }
 
     // (reviewTime, cardID, usn, buttonPressed, newInterval, previousInterval, newFactor, reviewDuration, reviewType)
