@@ -63,6 +63,7 @@ export class AnkiClient {
         }).then(data => data as ({ result: number[] }))
     }
 
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     async getNotesInfo(noteIds: number[]): Promise<any> {
         return this.ankiRequest(this.config, {
             action: 'notesInfo',
@@ -75,6 +76,7 @@ export class AnkiClient {
     async updateNoteFields(note: {
         id: number;
         fields: Record<string, string>
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
     }): Promise<any> {
         return this.ankiRequest(this.config, {
             action: 'updateNoteFields',
@@ -104,9 +106,9 @@ export class AnkiClient {
         modelName: string;
         fields: Record<string, string>,
         tags: string[]
-    }[]): Promise<void> {
+    }[]): Promise<boolean> {
         if (notes.length === 0) {
-            return;
+            return true;
         }
         const resp = await this.ankiRequest(this.config, {
             action: 'addNotes',
@@ -114,8 +116,12 @@ export class AnkiClient {
                 notes: notes
             }
         })
-        console.log(resp);
-
+        getLog().info(resp);
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        if ((resp as any).error) {
+            return false;
+        }
+        return true;
     }
 
     // (reviewTime, cardID, usn, buttonPressed, newInterval, previousInterval, newFactor, reviewDuration, reviewType)
@@ -148,11 +154,13 @@ export class AnkiClient {
 
     async cardsToNotes(cards: number[]): Promise<{ result: number[] }> {
         return this.ankiRequest(this.config, {
-            action: 'cardsToNotes',
-            params: {
-                cards: cards,
-            }
-        }).then(data => data as ({ result: number[] }))
+                action: 'cardsToNotes',
+                params: {
+                    cards: cards,
+                },
+            },
+            true
+        ).then(data => data as ({ result: number[] }))
     }
 
     async notesInfo(notes: number[]): Promise<{ result: NoteInfo[] }> {

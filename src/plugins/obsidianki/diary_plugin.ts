@@ -76,7 +76,11 @@ export class ObsidianDiaryPlugin extends Plugin {
                 tags
             }
         });
-        await this.ankiClient.addNotes(notes)
+        if (!await this.ankiClient.addNotes(notes)) {
+            for (const note of notes) {
+                await this.ankiClient.addNotes([note])
+            }
+        }
         getLog().info(cards);
 
         fileContent.replaceAll(this.obsidianConfig.unprocessedTag, this.obsidianConfig.processedTag);
