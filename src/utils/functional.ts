@@ -11,6 +11,7 @@ export function noopConcurrentInterval(name: string, callable: () => Promise<voi
             try {
                 running = true;
                 await callable();
+                // eslint-disable-next-line
             } catch (e: any) {
                 getGlobalLog().error(e);
             } finally {
@@ -31,7 +32,7 @@ export function partition<T>(array: T[], isValid: (elem: T) => boolean): [T[], T
     return [pass, fail];
 }
 
-export function groupBy<T, K extends keyof any>(array: T[], getKey: (item: T) => K): Record<K, T[]> {
+export function groupBy<T, K extends string | number | symbol>(array: T[], getKey: (item: T) => K): Record<K, T[]> {
     return array.reduce((accumulator, item) => {
         const key = getKey(item);
         if (!accumulator[key]) {

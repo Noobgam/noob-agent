@@ -28,7 +28,11 @@ export class AnkiClient {
         this.config = config;
     }
 
-    private async ankiRequest(config: AnkiConfig, request: AnkiConnectRequest, silent: boolean = false) {
+    private async ankiRequest(
+        config: AnkiConfig,
+        request: AnkiConnectRequest,
+        silent: boolean = false
+    ) {
         const stringifiedBody = JSON.stringify({
             ...request,
             version: ANKI_CONNECT_VERSION,
@@ -65,12 +69,15 @@ export class AnkiClient {
 
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     async getNotesInfo(noteIds: number[]): Promise<any> {
-        return this.ankiRequest(this.config, {
-            action: 'notesInfo',
-            params: {
-                notes: noteIds
-            }
-        })
+        return this.ankiRequest(
+            this.config, {
+                action: 'notesInfo',
+                params: {
+                    notes: noteIds
+                },
+            },
+            true
+        )
     }
 
     async updateNoteFields(note: {

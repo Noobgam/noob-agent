@@ -14,6 +14,8 @@ import {
 } from "./plugins/registry";
 import {WanikaniProgressPublisher} from "./plugins/wanikani/wanikani_progress";
 import {WaniKaniClient} from "./wanikani/client";
+import express, { Express, Request, Response } from 'express';
+import {GoogleCalendarClient} from "./calendar/GoogleCalendarClient";
 
 const ankiClient = new AnkiClient(globalConfig.anki);
 const pluginConfig: GlobalPluginConfiguration = {
@@ -31,7 +33,7 @@ const pluginConfig: GlobalPluginConfiguration = {
     }
 }
 
-new Executor(
+const executor = new Executor(
     pluginConfig,
     [
         new AnkiMysqlPlugin(
@@ -65,4 +67,44 @@ new Executor(
     ],
     globalConfig.prometheus,
 )
+if (process.env["EXECUTOR_START"]) {
+    executor.start()
+}
+
+const clientSecretFile = process.env['NOOB_AGENT_CLIENT_SECRETS_FILE'];
+
+
+
+const app: Express = express();
+const port = 3000;
+
+if (clientSecretFile) {
+    const googleCalendarScopes = [
+        'https://www.googleapis.com/auth/calendar.calendarlist.readonly',
+        'https://www.googleapis.com/auth/calendar.events.readonly',
+    ];
+    const googleCalendarClient = new GoogleCalendarClient(clientSecretFile, googleCalendarScopes);
+    app.get('/calendar/authorize', async (_: Request, res: Response) => {
+        await googleCalendarClient.authorize();
+        res.send('Authorization successful. You can close this window.');
+    });
+
+    app.get('/calendar/getEvents', async (_: Request, res: Response) => {
+        try {
+            const events = await googleCalendarClient.listEvents();
+            res.json(events);
+        } catch (error) {
+            console.error('Error fetching events:', error);
+            res.status(500).send('Failed to fetch events.');
+        }
+    });
+} else {
+    getGlobalLog().warn("Calendar apis will be disabled due to a lack of secret file")
+}
+
+app.listen(port, () => {
+    console.log(`Express server listening at http://localhost:${port}`);
+});
 getGlobalLog().info("Started successfully");
+
+

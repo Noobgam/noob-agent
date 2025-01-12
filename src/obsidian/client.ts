@@ -1,6 +1,7 @@
 import {throwException} from "../utils/functional";
-import {Agent} from "undici";
+import {fetch, Agent, Response} from "undici";
 import {getGlobalLog} from "../config";
+import * as net from "net"; // Import the net module
 
 const getLog = () => getGlobalLog({
     name: "obsidian-client"
@@ -28,6 +29,24 @@ export class ObsidianClient {
                     rejectUnauthorized: false,
                 }
             })
+        });
+    }
+
+    async isUp(): Promise<boolean> {
+        return new Promise((resolve) => {
+            const socket = new net.Socket();
+
+            socket.once('connect', () => {
+                socket.destroy();
+                resolve(true);
+            });
+
+            socket.once('error', () => {
+                socket.destroy();
+                resolve(false);
+            });
+
+            socket.connect({ port: this.port, host: '127.0.0.1' });
         });
     }
 
@@ -59,6 +78,6 @@ export class ObsidianClient {
 }
 
 export const getObsidianClient = () => new ObsidianClient(
-    parseInt(process.env["NOOBGAM_OBSIDIAN_PORT"] ?? throwException("token not defined")) ,
+    parseInt(process.env["NOOBGAM_OBSIDIAN_PORT"] ?? throwException("token not defined")),
     process.env["NOOBGAM_OBSIDIAN_TOKEN"] ?? throwException("token not defined")
 )

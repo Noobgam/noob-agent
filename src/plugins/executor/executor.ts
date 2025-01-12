@@ -11,14 +11,17 @@ const getLog = () => getGlobalLog({
 
 export class Executor {
     pluginConfig: GlobalPluginConfiguration;
-    registeredPlugins: Plugin[];
+    plugins: Plugin[];
     prometheusConfig: PrometheusConfig;
 
     constructor(pluginConfig: GlobalPluginConfiguration, plugins: Plugin[], prometheusConfig: PrometheusConfig) {
         this.pluginConfig = pluginConfig;
-        this.registeredPlugins = [];
+        this.plugins = plugins;
         this.prometheusConfig = prometheusConfig;
-        plugins.forEach(plugin => this.registerPlugin(plugin))
+    }
+
+    start() {
+        this.plugins.forEach(plugin => this.registerPlugin(plugin))
     }
 
     registerPlugin(plugin: Plugin) {
