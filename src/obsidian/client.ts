@@ -1,5 +1,4 @@
 import {throwException} from "../utils/functional";
-import {fetch, Agent, Response} from "undici";
 import {getGlobalLog} from "../config";
 import * as net from "net"; // Import the net module
 
@@ -18,17 +17,12 @@ export class ObsidianClient {
     }
 
     private async fetch(suffix: string, init?: RequestInit): Promise<Response> {
-        getLog().info(`Executing: https://127.0.0.1:${this.port}${suffix}`);
-        return fetch(`https://127.0.0.1:${this.port}${suffix}`, {
+        getLog().info(`Executing: http://127.0.0.1:${this.port}${suffix}`);
+        return fetch(`http://127.0.0.1:${this.port}${suffix}`, {
             ...init,
             headers: {
                 'Authorization': `Bearer ${this.token}`,
             },
-            dispatcher: new Agent({
-                connect: {
-                    rejectUnauthorized: false,
-                }
-            })
         });
     }
 

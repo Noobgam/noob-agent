@@ -5,6 +5,7 @@ import * as path from 'path';
 import * as fs from 'fs/promises';
 import {constants} from "node:fs"; // Import fs.promises for async file operations
 
+// https://developers.google.com/calendar/api/v3/reference/events/list
 export class GoogleCalendarClient {
     private oauth2ClientSecretFile: string;
     private scopes: string[];
@@ -89,7 +90,7 @@ export class GoogleCalendarClient {
         });
     }
 
-    public async listEvents(calendarId: string = 'primary'): Promise<calendar_v3.Schema$Event[]> {
+    public async listEvents(params: { from?: string; to?: string }): Promise<calendar_v3.Schema$Event[]> {
         if (!this.calendarService) {
             await this.authorize();
         }
@@ -98,7 +99,11 @@ export class GoogleCalendarClient {
         }
 
         const response = await this.calendarService.events.list({
-            calendarId: calendarId,
+            timeMin: params.from,
+            timeMax: params.to,
+            singleEvents: true,
+            orderBy: "startTime",
+            calendarId: 'primary'
         });
 
         return response.data.items || [];

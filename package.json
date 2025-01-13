@@ -13,6 +13,7 @@
     "playground-index": "node --loader ts-node/esm ./src/index.ts",
     "playground": "node --loader ts-node/esm ./src/playground/main.ts",
     "playground2": "node --loader ts-node/esm ./src/playground/main2.ts",
+    "api": "node --loader ts-node/esm ./src/api/api.ts",
     "install-win-service": "yarn release && node --loader ts-node/esm ./src/installer/install.ts",
     "rebuild-win-service": "yarn release && node --loader ts-node/esm ./src/installer/restart.ts",
     "uninstall-win-service": "node --loader ts-node/esm ./src/installer/uninstall.ts"
@@ -30,11 +31,11 @@
     "mysql2": "^3.12.0",
     "pino": "^9.6.0",
     "prom-client": "^15.1.3",
-    "typescript": "^5.7.3",
-    "undici": "^7.2.1"
+    "terser-webpack-plugin": "^5.3.11",
+    "typescript": "^5.7.3"
   },
   "devDependencies": {
-    "@types/express": "^4",
+    "@types/express": "^5.0.0",
     "@types/node": "^22.10.5",
     "@types/node-windows": "^0.1.6",
     "@types/object-hash": "^3.0.6",
@@ -49,5 +50,6 @@
     "webpack-cli": "^6.0.1",
     "webpack-node-externals": "^3.0.0",
     "zod": "^3.24.1"
-  }
+  },
+  "packageManager": "yarn@4.6.0"
 }

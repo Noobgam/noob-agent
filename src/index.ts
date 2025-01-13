@@ -67,44 +67,7 @@ const executor = new Executor(
     ],
     globalConfig.prometheus,
 )
-if (process.env["EXECUTOR_START"]) {
-    executor.start()
-}
-
-const clientSecretFile = process.env['NOOB_AGENT_CLIENT_SECRETS_FILE'];
-
-
-
-const app: Express = express();
-const port = 3000;
-
-if (clientSecretFile) {
-    const googleCalendarScopes = [
-        'https://www.googleapis.com/auth/calendar.calendarlist.readonly',
-        'https://www.googleapis.com/auth/calendar.events.readonly',
-    ];
-    const googleCalendarClient = new GoogleCalendarClient(clientSecretFile, googleCalendarScopes);
-    app.get('/calendar/authorize', async (_: Request, res: Response) => {
-        await googleCalendarClient.authorize();
-        res.send('Authorization successful. You can close this window.');
-    });
-
-    app.get('/calendar/getEvents', async (_: Request, res: Response) => {
-        try {
-            const events = await googleCalendarClient.listEvents();
-            res.json(events);
-        } catch (error) {
-            console.error('Error fetching events:', error);
-            res.status(500).send('Failed to fetch events.');
-        }
-    });
-} else {
-    getGlobalLog().warn("Calendar apis will be disabled due to a lack of secret file")
-}
-
-app.listen(port, () => {
-    console.log(`Express server listening at http://localhost:${port}`);
-});
+executor.start()
 getGlobalLog().info("Started successfully");
 
 
